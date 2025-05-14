@@ -1,0 +1,115 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap');
+@import '@angular/cdk/overlay-prebuilt.css';
+
+body {
+  font-family: 'vazirmatn';
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+code {
+  background-color: #f0f0f0;
+  border: 1px solid orange;
+  color: teal;
+  padding: 5px;
+  border-radius: 3px;
+  direction: ltr;
+}
+
+.switch-container {
+  display: inline-block;
+  position: relative;
+  width: 55px;
+  height: 28px;
+}
+
+.switch-checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-label {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.switch-label .switch-button {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.switch-checkbox:checked + .switch-label {
+  background-color: #2196F3;
+}
+
+.switch-checkbox:checked + .switch-label .switch-button {
+  transform: translateX(26px);
+}
+
+input {
+  font-family: inherit;
+  max-width: 300px;
+  padding: 6px 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+input:hover {
+  border-color: #40a9ff;
+}
+
+input:focus {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  outline: none;
+}
+
+select {
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+
+/* Forms */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+.form-group {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.range-labels {
+  display: flex;
+  gap: 15px;
+}
+
+.range-labels input {
+  max-width: 120px;
+}

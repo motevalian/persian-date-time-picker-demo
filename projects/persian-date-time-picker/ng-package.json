@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/persian-date-time-picker",
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  },
+  "allowedNonPeerDependencies": [
+    "date-fns",
+    "date-fns-jalali"
+  ],
+  "assets": [
+    "./styles.css"
+  ]
+}

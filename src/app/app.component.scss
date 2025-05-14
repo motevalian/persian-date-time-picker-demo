@@ -1,0 +1,118 @@
+.cnt {
+  display: flex;
+  justify-content: space-between;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  display: flex;
+}
+
+.main-section {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  position: relative;
+  color: #555;
+  padding: 0 15px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  transition: width 300ms ease-in-out;
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+}
+
+.sidebar.closed .sidebar-content {
+  opacity: 0;
+}
+
+.sidebar ul {
+  padding: 0;
+}
+
+.sidebar li {
+  list-style: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.sidebar li:hover {
+  background: #ddd;
+}
+
+.header {
+  position: relative;
+  height: 30px;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  position: absolute;
+  left: -15px;
+  top: -10px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background: #fff;
+  overflow: auto;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.box {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  width: 45%;
+  min-width: 500px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .code {
+  direction: ltr;
+  display: none;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  white-space: pre-wrap;
+  border-radius: 5px;
+
+  & code {
+    border: none;
+    padding: 0;
+  }
+}
+
+::ng-deep .toggle-btn {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}

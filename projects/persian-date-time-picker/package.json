@@ -1,0 +1,48 @@
+{
+  "name": "persian-date-time-picker",
+  "version": "0.0.3",
+  "description": "A Comprehensive date/time Picker for Angular with Persian/Jalali support",
+  "author": "Saeed Motevalian",
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "jalali",
+    "persian",
+    "datepicker",
+    "timepicker",
+    "date",
+    "calendar",
+    "rangepicker"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saeedmotevalian/persian-date-time-picker"
+  },
+  "bugs": {
+    "url": "https://github.com/saeedmotevalian/persian-date-time-picker/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false,
+  "peerDependencies": {
+    "@angular/common": "^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "@angular/core": "^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "@angular/forms": "^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "@angular/cdk": "^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "@angular/animations": "^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "date-fns": "^4.1.0",
+    "date-fns-jalali": "^4.1.0-0"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1",
+    "date-fns": "^4.1.0",
+    "date-fns-jalali": "^4.1.0-0"
+  },
+  "exports": {
+    "./styles.css": {
+      "style": "./styles.css"
+    }
+  },
+  "sideEffects": false
+}

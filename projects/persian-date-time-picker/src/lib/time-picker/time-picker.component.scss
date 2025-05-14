@@ -1,0 +1,256 @@
+// Variables
+$primary-color: #1890ff;
+$primary-hover: #40a9ff;
+$border-color: #d9d9d9;
+$text-color: #666;
+$disabled-color: #d9d9d9;
+$separator-color: #999;
+$border-light: #f0f0f0;
+$box-shadow-color: rgba(0, 0, 0, 0.08);
+$focus-shadow-color: rgba(24, 144, 255, 0.2);
+
+// Mixins
+@mixin button-reset {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@mixin default-button {
+  padding: 4px 15px;
+  border-radius: 4px;
+  border: 1px solid $border-color;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+:host {
+  * {
+    font-family: inherit;
+    font-weight: 400;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.time-picker-wrapper {
+  display: inline-block;
+}
+
+.input-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+
+  &.focus {
+    border-color: $primary-hover;
+    box-shadow: 0 0 0 2px $focus-shadow-color;
+    outline: none;
+  }
+
+  &.disabled {
+    background: #fafafa;
+  }
+}
+
+input {
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    border-color: $primary-hover;
+  }
+
+  &.time-picker-input {
+    font-family: inherit;
+    width: 100%;
+    padding: 6px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+}
+
+.time-button {
+  @include button-reset;
+  padding: 4px 4px 0;
+}
+
+.time-picker-popup {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px 0 $box-shadow-color;
+  width: fit-content;
+  min-width: 200px;
+  overflow: hidden;
+  margin-block: 3px;
+  height: 40vh;
+  max-height: 280px;
+
+  &.inline {
+    box-shadow: none;
+    margin: 0;
+    border: 1px solid $border-color;
+
+    .time-picker-content {
+      padding: 4px;
+      height: 100%;
+    }
+
+    .time-columns {
+      padding: 4px;
+    }
+
+    .time-column {
+      &::-webkit-scrollbar {
+        width: 6px;
+
+        &-thumb {
+          background: $border-color;
+          border-radius: 3px;
+        }
+
+        &-track {
+          background: #f5f5f5;
+        }
+      }
+    }
+  }
+}
+
+.time-picker-header {
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  border-bottom: 1px solid $border-light;
+}
+
+.time-picker-content {
+  padding: 8px;
+  height: calc(100% - 59px);
+}
+
+.time-columns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  gap: 8px;
+  height: 100%;
+}
+
+.time-column {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  button {
+    width: 100%;
+    padding: 6px 8px;
+    @include button-reset;
+    color: $text-color;
+    font-size: 14px;
+    border-radius: 4px;
+
+    &:hover:not(.disabled) {
+      background: #f5f5f5;
+    }
+
+    &.selected {
+      background: #e6f4ff;
+      color: $primary-color;
+    }
+
+    &.disabled {
+      color: $disabled-color;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.time-scroller {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time-separator {
+  padding: 8px 0;
+  color: $separator-color;
+  font-weight: bold;
+}
+
+.time-picker-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  border-top: 1px solid $border-light;
+}
+
+button {
+  @include default-button;
+}
+
+.save-btn {
+  background: $primary-color;
+  border-color: $primary-color;
+  color: white;
+
+  &:hover {
+    background: $primary-hover;
+    border-color: $primary-hover;
+  }
+}
+
+.cancel-btn {
+  &:hover {
+    border-color: $primary-hover;
+    color: $primary-hover;
+  }
+}
+
+.footer-buttons,
+.footer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.now-btn {
+  color: $primary-color;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  padding-left: 0;
+
+  &:hover {
+    color: $primary-hover;
+  }
+}
+
+.embedded-time-picker {
+  &.time-picker-popup {
+    .time-picker-content {
+      height: 100%;
+    }
+  }
+
+  &.time-picker-popup.inline {
+    border: none;
+    border-radius: 0;
+    height: 286px;
+    max-height: 290px;
+    direction: ltr;
+  }
+}
