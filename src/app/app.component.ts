@@ -50,8 +50,8 @@ import {DisabledTimes} from './samples/disabled/diabled-time';
   ]
 })
 export class AppComponent {
-  title = 'date-time-picker-demo';
-  Version = '0.0.4';
+  title = 'persian-date-time-picker-demo';
+  Version = '0.0.5';
   isSidebarOpen = true;
   showPart = 'datepicker';
 
