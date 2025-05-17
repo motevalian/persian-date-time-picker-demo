@@ -16,7 +16,7 @@ This package supports Angular 14 and above. Specific version compatibility:
 
 ## Demo
 
-You can see the online [Demo](https://dtp.motevalian.com/)
+You can see the online [Demo](https://motevalian.com/dtp/)
 
 ## Components
 
