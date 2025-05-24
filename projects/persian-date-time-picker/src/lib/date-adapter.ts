@@ -45,28 +45,28 @@ import {
 } from 'date-fns';
 import {Injectable} from '@angular/core';
 
-export interface DateAdapter<D> {
-  today(): D;
+export interface DateAdapter<T> {
+  today(): T;
 
-  parse(value: any, formatString: string): D | null;
+  parse(value: any, formatString: string): T | null;
 
-  format(date: D, formatString: string): string;
+  format(date: T, formatString: string): string;
 
-  addDays(date: D, amount: number): D;
+  addDays(date: T, amount: number): T;
 
-  addMonths(date: D, amount: number): D;
+  addMonths(date: T, amount: number): T;
 
-  addYears(date: D, amount: number): D;
+  addYears(date: T, amount: number): T;
 
-  addHours(date: D, amount: number): D;
+  addHours(date: T, amount: number): T;
 
-  getYear(date: D): number | null;
+  getYear(date: T): number | null;
 
-  getMonth(date: D): number | null;
+  getMonth(date: T): number | null;
 
-  getDate(date: D): number | null;
+  getDate(date: T): number | null;
 
-  getDayOfWeek(date: D): number;
+  getDayOfWeek(date: T): number;
 
   getMonthNames(style: 'long' | 'short' | 'narrow'): string[];
 
@@ -76,59 +76,60 @@ export interface DateAdapter<D> {
 
   getFirstDayOfWeek(): number;
 
-  getNumDaysInMonth(date: D): number;
+  getNumDaysInMonth(date: T): number;
 
-  clone(date: D): D;
+  clone(date: T): T;
 
-  createDate(year: number, month: number, date: number): D;
+  createDate(year: number, month: number, date: number): T;
 
-  isSameDay(date1: D, date2: D): boolean;
+  isSameDay(date1: T, date2: T): boolean;
 
-  isSameMonth(date1: D, date2: D): boolean;
+  isSameMonth(date1: T, date2: T): boolean;
 
-  isSameYear(date1: D, date2: D): boolean;
+  isSameYear(date1: T, date2: T): boolean;
 
-  isAfter(date1: D, date2: D): boolean;
+  isAfter(date1: T, date2: T): boolean;
 
-  isBefore(date1: D, date2: D): boolean;
+  isBefore(date1: T, date2: T): boolean;
 
-  isEqual(date1: D, date2: D): boolean;
+  isEqual(date1: T, date2: T): boolean;
 
-  startOfMonth(date: D): D;
+  startOfMonth(date: T): T;
 
-  endOfMonth(date: D): D;
+  endOfMonth(date: T): T;
 
-  startOfWeek(date: D): D;
+  startOfWeek(date: T): T;
 
   isValidFormat(dateString: string, formatString: string): boolean;
 
-  max(dates: D[]): D;
+  max(dates: T[]): T;
 
-  setYear(date: D, year: number): D;
+  setYear(date: T, year: number): T;
 
-  startOfDay(date: D): D;
+  startOfDay(date: T): T;
 
-  getHours(date: D): number | null;
+  getHours(date: T): number | null;
 
-  getMinutes(date: D): number | null;
+  getMinutes(date: T): number | null;
 
-  getSeconds(date: D): number | null;
+  getSeconds(date: T): number | null;
 
-  setHours(date: D, hours: number): D;
+  setHours(date: T, hours: number): T;
 
-  setMinutes(date: D, minutes: number): D;
+  setMinutes(date: T, minutes: number): T;
 
-  setSeconds(date: D, seconds: number): D;
+  setSeconds(date: T, seconds: number): T;
 
-  getDaysInMonth(date: D): number;
+  getDaysInMonth(date: T): number;
 
-  addMinutes(date: D, amount: number): D;
+  addMinutes(date: T, amount: number): T;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class JalaliDateAdapter implements DateAdapter<Date> {
+
   today(): Date {
     return new Date();
   }
@@ -346,6 +347,7 @@ export class JalaliDateAdapter implements DateAdapter<Date> {
   providedIn: 'root'
 })
 export class GregorianDateAdapter implements DateAdapter<Date> {
+
   today(): Date {
     return new Date();
   }

@@ -16,8 +16,8 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {CustomLabels, DateRange, Lang_Locale, YearRange} from '../utils/models';
-import {CalendarType, DatepickerMode} from '../utils/types';
+import {CustomLabels, DateRange, LanguageLocale, YearRange} from '../utils/models';
+import {CalendarType, DatePickerMode} from '../utils/types';
 import {TimePickerComponent} from '../time-picker/time-picker.component';
 import {takeUntil} from 'rxjs';
 import {NgFor, NgIf, NgTemplateOutlet} from '@angular/common';
@@ -39,12 +39,13 @@ import {DestroyService, PersianDateTimePickerService} from '../persian-date-time
   styleUrls: ['./date-picker-popup.component.scss']
 })
 export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+
   // ========== Input Properties ==========
   @Input() rtl = false;
   @Input() selectedDate: Date | null = null;
   @Input() selectedStartDate: Date | null = null;
   @Input() selectedEndDate: Date | null = null;
-  @Input() mode: DatepickerMode = 'day';
+  @Input() mode: DatePickerMode = 'day';
   @Input() isRange = false;
   @Input() customLabels?: Array<CustomLabels> = [];
   @Input() calendarType: CalendarType = 'gregorian';
@@ -85,22 +86,15 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
   yearList: number[] = [];
   yearRanges: Array<YearRange> = [];
   viewMode: 'days' | 'months' | 'years' = 'days';
-  lang?: Lang_Locale;
+  lang?: LanguageLocale;
   timeoutId: any = null;
   dayTemplate?: TemplateRef<any>;
   monthTemplate?: TemplateRef<any>;
   quarterTemplate?: TemplateRef<any>;
   yearTemplate?: TemplateRef<any>;
 
-  constructor(
-    public el: ElementRef,
-    public cdr: ChangeDetectorRef,
-    public dpService: PersianDateTimePickerService,
-    public jalali: JalaliDateAdapter,
-    public gregorian: GregorianDateAdapter,
-    public destroy$: DestroyService
-  ) {
-    cdr.markForCheck();
+  constructor(public elementRef: ElementRef, public changeDetectorRef: ChangeDetectorRef, public persianDateTimePickerService: PersianDateTimePickerService, public jalaliDateAdapter: JalaliDateAdapter, public gregorianDateAdapter: GregorianDateAdapter, public destroyService: DestroyService) {
+    changeDetectorRef.markForCheck();
   }
 
   // ========== Getters ==========
@@ -123,23 +117,23 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
     this.templates!.forEach((item) => {
       switch (item.getType()) {
         case 'day':
-          this.dayTemplate = item.template;
+          this.dayTemplate = item.templateRef;
           break;
 
         case 'month':
-          this.monthTemplate = item.template;
+          this.monthTemplate = item.templateRef;
           break;
 
         case 'quarter':
-          this.quarterTemplate = item.template;
+          this.quarterTemplate = item.templateRef;
           break;
 
         case 'year':
-          this.yearTemplate = item.template;
+          this.yearTemplate = item.templateRef;
           break;
       }
     });
-    this.cdr.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 
   ngOnDestroy(): void {
@@ -193,8 +187,8 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
 
   // ========== Date Adapter Methods ==========
   setDateAdapter(): void {
-    this.dateAdapter = this.calendarType === 'jalali' ? this.jalali : this.gregorian;
-    this.lang = this.dpService.locale;
+    this.dateAdapter = this.calendarType === 'jalali' ? this.jalaliDateAdapter : this.gregorianDateAdapter;
+    this.lang = this.persianDateTimePickerService.languageLocale;
   }
 
   // ========== Calendar Generation Methods ==========
@@ -224,7 +218,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
     this.viewMode = 'months';
     this.generateYearList(15);
     this.scrollToSelectedItem(this.dateAdapter!.getYear(this.getDate));
-    this.cdr.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 
   showYearSelector(): void {
@@ -232,7 +226,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
     this.generateYearRanges();
     this.generateYearList();
     this.scrollToSelectedItem();
-    this.cdr.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 
   // ========== Time Selection Methods ==========
@@ -279,9 +273,9 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
   setTimePickerDate(date?: Date) {
     if (this.showTimePicker) {
       if (this.isRange) {
-        this.dpService.activeInput$.asObservable()
+        this.persianDateTimePickerService.activeInput.asObservable()
           .pipe(
-            takeUntil(this.destroy$)
+            takeUntil(this.destroyService)
           )
           .subscribe(active => {
             if (active == 'start') {
@@ -320,7 +314,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
       this.handleSingleSelection(date);
     }
     this.currentDate = date;
-    this.cdr.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 
   handleRangeSelection(date: Date): void {
@@ -334,7 +328,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
       this.selectedEndDate = null;
       if (!this.showTimePicker) {
         this.activeInput = 'end';
-        this.dpService.activeInput$.next('end');
+        this.persianDateTimePickerService.activeInput.next('end');
       }
       this.dateRangeSelected.emit({
         start: this.selectedStartDate,
@@ -343,7 +337,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
     } else {
       if (this.showTimePicker) {
         this.activeInput = 'end';
-        this.dpService.activeInput$.next('end');
+        this.persianDateTimePickerService.activeInput.next('end');
       }
       this.selectedEndDate = date;
       this.dateRangeSelected.emit({
@@ -353,7 +347,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
     }
 
     if (prevStartDate !== this.selectedStartDate || prevEndDate !== this.selectedEndDate)
-      this.cdr.markForCheck();
+      this.changeDetectorRef.markForCheck();
   }
 
   handleSingleSelection(date: Date): void {
@@ -379,7 +373,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
     } else {
       this.viewMode = 'days';
       this.generateCalendar();
-      this.cdr.detectChanges();
+      this.changeDetectorRef.detectChanges();
     }
 
     this.scrollToSelectedItem(month);
@@ -411,7 +405,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
       this.scrollToSelectedItem(year);
     } else {
       this.viewMode = 'months';
-      this.cdr.detectChanges();
+      this.changeDetectorRef.detectChanges();
     }
   }
 
@@ -419,7 +413,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
   goPrev(): void {
     if (this.viewMode === 'days') {
       this.prevMonth();
-      this.cdr.detectChanges();
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
@@ -435,14 +429,14 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
       id = yearStart;
     }
 
-    this.cdr.detectChanges();
+    this.changeDetectorRef.detectChanges();
     this.scrollToSelectedItem(id!);
   }
 
   goNext(): void {
     if (this.viewMode === 'days') {
       this.nextMonth();
-      this.cdr.detectChanges();
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
@@ -458,7 +452,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
       id = yearStart;
     }
 
-    this.cdr.detectChanges();
+    this.changeDetectorRef.detectChanges();
     this.scrollToSelectedItem(id!);
   }
 
@@ -719,7 +713,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
   selectYearRange(startYear: number): void {
     this.yearList = Array.from({length: 15}, (_, i) => startYear + i);
     this.viewMode = 'years';
-    this.cdr.detectChanges();
+    this.changeDetectorRef.detectChanges();
     this.scrollToSelectedItem(startYear);
   }
 
@@ -762,7 +756,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
     this.generateCalendar();
     this.selectDate(this.currentDate);
     this.setTimePickerDate(this.currentDate);
-    this.cdr.detectChanges();
+    this.changeDetectorRef.detectChanges();
   }
 
   onOkClick() {

@@ -33,7 +33,7 @@ import {
 } from '@angular/forms';
 import {slideMotion} from '../utils/animation/slide';
 import {DateAdapter, GregorianDateAdapter, JalaliDateAdapter} from '../date-adapter';
-import {CustomLabels, DateRange, Lang_Locale, RangeInputLabels} from '../utils/models';
+import {CustomLabels, DateRange, LanguageLocale, RangeInputLabels} from '../utils/models';
 import {DatePickerPopupComponent} from '../date-picker-popup/date-picker-popup.component';
 import {
   CdkOverlayOrigin,
@@ -51,7 +51,7 @@ import {
 import {DOCUMENT, NgIf, NgTemplateOutlet} from '@angular/common';
 import {DestroyService, PersianDateTimePickerService} from '../persian-date-time-picker.service';
 import {fromEvent, takeUntil} from 'rxjs';
-import {CalendarType, DatepickerMode, Placement, RangePartType, ValueFormat} from '../utils/types';
+import {CalendarType, DatePickerMode, Placement, RangePartType, ValueFormat} from '../utils/types';
 import {CustomTemplate} from '../utils/template.directive';
 import {DateMaskDirective} from '../utils/input-mask.directive';
 
@@ -87,13 +87,14 @@ import {DateMaskDirective} from '../utils/input-mask.directive';
   animations: [slideMotion]
 })
 export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChanges, AfterViewInit, OnDestroy {
+
   // ========== Input Properties ==========
   @Input() rtl = false;
-  @Input() mode: DatepickerMode = 'day';
+  @Input() mode: DatePickerMode = 'day';
   @Input() isRange = false;
   @Input() customLabels?: Array<CustomLabels>;
   @Input() calendarType: CalendarType = 'gregorian';
-  @Input() lang?: Lang_Locale;
+  @Input() lang?: LanguageLocale;
   @Input() cssClass = '';
   @Input() footerDescription = '';
   @Input() rangeInputLabels?: RangeInputLabels;
@@ -141,18 +142,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   timeDisplayFormat = 'HH:mm';
   documentClickListener?: (event: MouseEvent) => void;
 
-  constructor(
-    public fb: FormBuilder,
-    public elementRef: ElementRef,
-    public injector: Injector,
-    public cdref: ChangeDetectorRef,
-    public dpService: PersianDateTimePickerService,
-    public destroy$: DestroyService,
-    public ngZone: NgZone,
-    public jalali: JalaliDateAdapter,
-    public gregorian: GregorianDateAdapter,
-    @Inject(DOCUMENT) doc: Document,
-  ) {
+  constructor(public formBuilder: FormBuilder, public elementRef: ElementRef, public injector: Injector, public changeDetectorRef: ChangeDetectorRef, public persianDateTimePickerService: PersianDateTimePickerService, public destroyService: DestroyService, public ngZone: NgZone, public jalaliDateAdapter: JalaliDateAdapter, public gregorianDateAdapter: GregorianDateAdapter, @Inject(DOCUMENT) doc: Document) {
     this.initializeComponent(doc);
   }
 
@@ -193,7 +183,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   }
 
   get valueAdapter() {
-    return this.valueFormat == 'jalali' ? this.jalali : this.gregorian;
+    return this.valueFormat == 'jalali' ? this.jalaliDateAdapter : this.gregorianDateAdapter;
   }
 
   // ========== Lifecycle Hooks ==========
@@ -213,8 +203,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.destroyService.next();
+    this.destroyService.complete();
     document.removeEventListener('click', this.documentClickListener!);
   }
 
@@ -222,14 +212,14 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   initializeComponent(doc: Document): void {
     this.origin = new CdkOverlayOrigin(this.elementRef);
     this.document = doc;
-    this.form = this.fb.group({
+    this.form = this.formBuilder.group({
       dateInput: [''],
       startDateInput: [''],
       endDateInput: ['']
     });
     this.documentClickListener = this.handleDocumentClick.bind(this);
-    this.lang = this.calendarType === 'jalali' ? this.dpService.locale_fa : this.dpService.locale_en;
-    this.dpService.locale = this.lang;
+    this.lang = this.calendarType === 'jalali' ? this.persianDateTimePickerService.persianLocale : this.persianDateTimePickerService.englishLocale;
+    this.persianDateTimePickerService.languageLocale = this.lang;
   }
 
   initialize(): void {
@@ -244,16 +234,16 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
 
   // ========== Date Adapter Methods ==========
   setDateAdapter(): void {
-    this.dateAdapter = this.calendarType === 'jalali' ? this.jalali : this.gregorian;
+    this.dateAdapter = this.calendarType === 'jalali' ? this.jalaliDateAdapter : this.gregorianDateAdapter;
   }
 
   // ========== Form Control Methods ==========
   setupFormControls(): void {
     if (this.isRange) {
-      this.form!.get('startDateInput')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.onInputChange(value, 'start'));
-      this.form!.get('endDateInput')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.onInputChange(value, 'end'));
+      this.form!.get('startDateInput')?.valueChanges.pipe(takeUntil(this.destroyService)).subscribe(value => this.onInputChange(value, 'start'));
+      this.form!.get('endDateInput')?.valueChanges.pipe(takeUntil(this.destroyService)).subscribe(value => this.onInputChange(value, 'end'));
     } else {
-      this.form!.get('dateInput')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.onInputChange(value));
+      this.form!.get('dateInput')?.valueChanges.pipe(takeUntil(this.destroyService)).subscribe(value => this.onInputChange(value));
     }
   }
 
@@ -262,8 +252,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
     if (changes['calendarType']) {
       this.setDateAdapter();
       this.updateInputValue();
-      this.lang = this.calendarType === 'jalali' ? this.dpService.locale_fa : this.dpService.locale_en;
-      this.dpService.locale = this.lang;
+      this.lang = this.calendarType === 'jalali' ? this.persianDateTimePickerService.persianLocale : this.persianDateTimePickerService.englishLocale;
+      this.persianDateTimePickerService.languageLocale = this.lang;
     }
     if (changes['minDate'] || changes['maxDate']) {
       this._minDate = this.valueAdapter?.parse(this._minDate, this.extractDateFormat(this.format));
@@ -278,7 +268,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
     }
     if (changes['lang']) {
       this.lang = changes['lang'].currentValue;
-      this.dpService.locale = this.lang;
+      this.persianDateTimePickerService.languageLocale = this.lang;
     }
     if (changes['mode'] && !changes['format']) {
       this.format = this.getFormatForMode();
@@ -422,7 +412,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
     if (this.isOpen) {
       this.isOpen = false;
       this.onOpenChange.emit(false);
-      this.cdref.markForCheck();
+      this.changeDetectorRef.markForCheck();
     }
   }
 
@@ -433,7 +423,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
     this.isOpen = true;
     this.onOpenChange.emit(true);
     this.focus();
-    this.cdref.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 
   focus(): void {
@@ -651,7 +641,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
       this.currentPositionY !== position.connectionPair.originY) {
       this.currentPositionX = position.connectionPair.originX;
       this.currentPositionY = position.connectionPair.originY;
-      this.cdref.markForCheck();
+      this.changeDetectorRef.markForCheck();
     }
   }
 
@@ -661,7 +651,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
     this.onTouch();
     if (
       !this.elementRef.nativeElement.contains(event.relatedTarget as Node) &&
-      !this.datePickerPopup?.el.nativeElement.contains(event.relatedTarget as Node)
+      !this.datePickerPopup?.elementRef.nativeElement.contains(event.relatedTarget as Node)
     ) {
       this.close();
     }
@@ -768,9 +758,9 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
       event
     });
     this.activeInput = inputType;
-    this.dpService.activeInput$.next(this.activeInput!);
+    this.persianDateTimePickerService.activeInput.next(this.activeInput!);
     this.open();
-    this.cdref.detectChanges();
+    this.changeDetectorRef.detectChanges();
   }
 
   onInputKeydown(event: KeyboardEvent): void {
@@ -823,7 +813,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
         }
       }
       this.datePickerPopup.generateCalendar();
-      this.cdref.detectChanges();
+      this.changeDetectorRef.detectChanges();
     }
   }
 
@@ -834,9 +824,9 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
       case 'date':
         return date;
       case 'jalali':
-        return this.jalali.format(date, this.format);
+        return this.jalaliDateAdapter.format(date, this.format);
       case 'gregorian':
-        return this.gregorian.format(date, this.format);
+        return this.gregorianDateAdapter.format(date, this.format);
       default:
         return this.dateAdapter!.format(date, this.format);
     }
@@ -886,7 +876,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
       this.isInternalChange = false;
       this.updateDatePickerPopup();
 
-      this.cdref.markForCheck();
+      this.changeDetectorRef.markForCheck();
     } else {
       this.resetValues();
     }
@@ -915,8 +905,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
 
   // ========== Setup Methods ==========
   setupActiveInputSubscription(): void {
-    this.dpService.activeInput$
-      .pipe(takeUntil(this.destroy$))
+    this.persianDateTimePickerService.activeInput
+      .pipe(takeUntil(this.destroyService))
       .subscribe((active: any) => {
         this.activeInput = active;
         if (active) {
@@ -930,7 +920,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   setupMouseDownEventHandler(): void {
     this.ngZone.runOutsideAngular(() =>
       fromEvent(this.elementRef.nativeElement, 'mousedown')
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntil(this.destroyService))
         .subscribe((event: any) => {
           if ((event.target as HTMLInputElement).tagName.toLowerCase() !== 'input') {
             event.preventDefault();

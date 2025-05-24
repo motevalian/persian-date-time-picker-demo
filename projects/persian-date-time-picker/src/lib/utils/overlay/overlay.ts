@@ -1,8 +1,3 @@
-/**
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://github.com/NG-ZORRO/../blob/master/LICENSE
- */
-
 import {
   CdkConnectedOverlay,
   CdkOverlayOrigin,
@@ -17,15 +12,8 @@ import {DestroyService} from '../../persian-date-time-picker.service';
 
 export type SafeAny = any;
 
-function propDecoratorFactory<T, D>(
-  name: string,
-  fallback: (v: T) => D
-): (target: SafeAny, propName: string) => void {
-  function propDecorator(
-    target: SafeAny,
-    propName: string,
-    originalDescriptor?: TypedPropertyDescriptor<SafeAny>
-  ): SafeAny {
+function propDecoratorFactory<T, D>(name: string, fallback: (v: T) => D): (target: SafeAny, propName: string) => void {
+  function propDecorator(target: SafeAny, propName: string, safeAnyTypedPropertyDescriptor?: TypedPropertyDescriptor<SafeAny>): SafeAny {
     const privatePropName = `$$__zorroPropDecorator__${propName}`;
 
     if (Object.prototype.hasOwnProperty.call(target, privatePropName)) {
@@ -39,13 +27,13 @@ function propDecoratorFactory<T, D>(
 
     return {
       get(): string {
-        return originalDescriptor && originalDescriptor.get
-          ? originalDescriptor.get.bind(this)()
+        return safeAnyTypedPropertyDescriptor && safeAnyTypedPropertyDescriptor.get
+          ? safeAnyTypedPropertyDescriptor.get.bind(this)()
           : this[privatePropName];
       },
       set(value: T): void {
-        if (originalDescriptor && originalDescriptor.set) {
-          originalDescriptor.set.bind(this)(fallback(value));
+        if (safeAnyTypedPropertyDescriptor && safeAnyTypedPropertyDescriptor.set) {
+          safeAnyTypedPropertyDescriptor.set.bind(this)(fallback(value));
         }
         this[privatePropName] = fallback(value);
       }
@@ -89,16 +77,14 @@ type Dimensions = Omit<ClientRect, 'x' | 'y' | 'toJSON'>;
   providers: [DestroyService]
 })
 export class NzConnectedOverlayDirective {
+
   @Input() @InputBoolean() nzArrowPointAtCenter: boolean = false;
 
-  constructor(
-    private readonly cdkConnectedOverlay: CdkConnectedOverlay,
-    private readonly nzDestroyService: DestroyService
-  ) {
+  constructor(private readonly cdkConnectedOverlay: CdkConnectedOverlay, private readonly destroyService: DestroyService) {
     this.cdkConnectedOverlay.backdropClass = 'nz-overlay-transparent-backdrop';
 
     this.cdkConnectedOverlay.positionChange
-      .pipe(takeUntil(this.nzDestroyService))
+      .pipe(takeUntil(this.destroyService))
       .subscribe((position: ConnectedOverlayPositionChange) => {
         if (this.nzArrowPointAtCenter) {
           this.updateArrowPosition(position);

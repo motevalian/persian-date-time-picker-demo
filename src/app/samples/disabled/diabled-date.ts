@@ -1,9 +1,6 @@
 import {Component} from "@angular/core";
-import {
-  PersianDateTimePickerModule
-} from '../../../../projects/persian-date-time-picker/src/lib/persian-date-time-picker.module';
+import {JalaliDateAdapter, PersianDateTimePickerModule} from 'persian-date-time-picker';
 import {FormsModule} from '@angular/forms';
-import {JalaliDateAdapter} from '../../../../projects/persian-date-time-picker/src/lib/date-adapter';
 
 
 @Component({
@@ -57,6 +54,7 @@ import {JalaliDateAdapter} from '../../../../projects/persian-date-time-picker/s
   imports: [PersianDateTimePickerModule, FormsModule]
 })
 export class DisabledDates {
+
   selectedDate?: Date | string;
 
   // Basic
@@ -143,8 +141,8 @@ export class DisabledDates {
             new Date() //today
         ];
         disabledDatesFilterJalali = (date: Date) => {
-            const year = this.jalali.getYear(date)
-            const month = this.jalali.getMonth(date);
+            const year = this.jalaliDateAdapter.getYear(date)
+            const month = this.jalaliDateAdapter.getMonth(date);
             // Disable 1407 year and every Farvardin(0) and Ordibehesht(1)
             return year == 1407 || month === 0 || month === 1;
         };
@@ -184,14 +182,11 @@ export class DisabledDates {
             return hour < 9 || hour >= 17;
         };
 
-        constructor(private jalali: JalaliDateAdapter) {}
+        constructor(private jalaliDateAdapter: JalaliDateAdapter) {}
     }
     `;
 
-  /**
-   *
-   */
-  constructor(private jalali: JalaliDateAdapter) {
+  constructor(private jalaliDateAdapter: JalaliDateAdapter) {
   }
 
   disabledDatesFilter = (date: Date) => {
@@ -201,8 +196,8 @@ export class DisabledDates {
   };
 
   disabledDatesFilterJalali = (date: Date) => {
-    const year = this.jalali.getYear(date);
-    const month = this.jalali.getMonth(date);
+    const year = this.jalaliDateAdapter.getYear(date);
+    const month = this.jalaliDateAdapter.getMonth(date);
     // Disable 1407 year and every Farvardin (0) and Ordibehesht (1) months
     return year == 1407 || month === 0 || month === 1;
   };

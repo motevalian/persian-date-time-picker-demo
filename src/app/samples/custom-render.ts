@@ -1,8 +1,5 @@
 import {Component} from "@angular/core";
-import {GregorianDateAdapter, JalaliDateAdapter} from '../../../projects/persian-date-time-picker/src/lib/date-adapter';
-import {
-  PersianDateTimePickerModule
-} from '../../../projects/persian-date-time-picker/src/lib/persian-date-time-picker.module';
+import {GregorianDateAdapter, JalaliDateAdapter, PersianDateTimePickerModule} from 'persian-date-time-picker';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 
@@ -12,7 +9,7 @@ import {NgIf} from '@angular/common';
     Gregorian:
     <persian-date-picker
       [(ngModel)]="selectedDate">
-      <ng-template Template="day" let-date>
+      <ng-template dtp-template="day" let-date>
         <span class="meeting"
               *ngIf="date.getDate() == 14 || date.getDate() == 16 || date.getDate() == 18">
           {{ date.getDate() }}
@@ -30,7 +27,7 @@ import {NgIf} from '@angular/common';
       [rtl]="true"
       [calendarType]="'jalali'"
       [(ngModel)]="selectedDate">
-      <ng-template Template="day" let-date>
+      <ng-template dtp-template="day" let-date>
         <span class="meeting"
               *ngIf="getJalaliDay(date) == 14 || getJalaliDay(date) == 16 || getJalaliDay(date) == 18">
           {{ getJalaliDay(date) }}
@@ -46,7 +43,7 @@ import {NgIf} from '@angular/common';
     <persian-date-picker
       [(ngModel)]="selectedDate"
       [mode]="'month'">
-      <ng-template Template="month" let-month>
+      <ng-template dtp-template="month" let-month>
         <div class="border-red">
           {{ getMonthName(month) }}
         </div>
@@ -57,7 +54,7 @@ import {NgIf} from '@angular/common';
     <persian-date-picker
       [(ngModel)]="selectedDate"
       [mode]="'year'">
-      <ng-template Template="year" let-year>
+      <ng-template dtp-template="year" let-year>
         <div *ngIf="year % 2 == 0" class="border-red">
           {{ year }}
         </div>
@@ -110,6 +107,7 @@ import {NgIf} from '@angular/common';
   imports: [PersianDateTimePickerModule, FormsModule, NgIf]
 })
 export class CustomRender {
+
   selectedDate?: Date | string;
   demoCode = `
         @Component({
@@ -118,7 +116,7 @@ export class CustomRender {
             Gregorian:
         <persian-date-picker
             [(ngModel)]="selectedDate">
-            <ng-template Template="day" let-date>
+            <ng-template dtp-template="day" let-date>
                 <span class="meeting"
                     *ngIf="date.getDate() == 14 || date.getDate() == 16 || date.getDate() == 18">
                     {{ date.getDate() }}
@@ -136,7 +134,7 @@ export class CustomRender {
             [rtl]="true"
             [calendarType]="'jalali'"
             [(ngModel)]="selectedDate">
-            <ng-template Template="day" let-date>
+            <ng-template dtp-template="day" let-date>
             <span class="meeting"
                     *ngIf="getJalaliDay(date) == 14 || getJalaliDay(date) == 16 || getJalaliDay(date) == 18">
                     {{ getJalaliDay(date) }}
@@ -152,7 +150,7 @@ export class CustomRender {
         <persian-date-picker
             [(ngModel)]="selectedDate"
             [mode]="'month'">
-            <ng-template Template="month" let-month>
+            <ng-template dtp-template="month" let-month>
                 <div class="border-red">
                     {{ getMonthName(month) }}
                 </div>
@@ -163,7 +161,7 @@ export class CustomRender {
         <persian-date-picker
             [(ngModel)]="selectedDate"
             [mode]="'year'">
-            <ng-template Template="year" let-year>
+            <ng-template dtp-template="year" let-year>
                 <div *ngIf="year % 2 == 0" class="border-red">
                     {{ year }}
                 </div>
@@ -208,44 +206,41 @@ export class CustomRender {
         selectedDate: Date | string;
 
         constructor(
-            private jalali: JalaliDateAdapter,
-            private gregorian: GregorianDateAdapter
+            private jalaliDateAdapter: JalaliDateAdapter,
+            private gregorianDateAdapter: GregorianDateAdapter
         ) {}
 
         getJalaliDay(date: Date) {
-            return this.jalali.getDate(date)
+            return this.jalaliDateAdapter.getDate(date)
         }
 
         getMonthName(monthNumber: number) {
-            let months = this.gregorian.getMonthNames('short');
+            let months = this.gregorianDateAdapter.getMonthNames('short');
             let month = months[monthNumber-1]
             return month;
         }
     }
     `;
 
-  constructor(
-    private jalali: JalaliDateAdapter,
-    private gregorian: GregorianDateAdapter
-  ) {
+  constructor(private jalaliDateAdapter: JalaliDateAdapter, private gregorianDateAdapter: GregorianDateAdapter) {
   }
 
   getJalaliDay(date: Date) {
-    return this.jalali.getDate(date);
+    return this.jalaliDateAdapter.getDate(date);
   }
 
   getMonthName(monthNumber: number) {
-    let months = this.gregorian.getMonthNames('short');
+    let months = this.gregorianDateAdapter.getMonthNames('short');
     let month = months[monthNumber - 1];
     return month;
   }
 
-  toggleCode(elm: HTMLDivElement) {
-    let display = elm.style.display;
+  toggleCode(htmlDivElement: HTMLDivElement) {
+    let display = htmlDivElement.style.display;
     if (display != 'block') {
-      elm.style.display = 'block';
+      htmlDivElement.style.display = 'block';
     } else {
-      elm.style.display = 'none';
+      htmlDivElement.style.display = 'none';
     }
   }
 }

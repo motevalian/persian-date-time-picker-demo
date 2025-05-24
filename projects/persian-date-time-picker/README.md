@@ -255,7 +255,7 @@ The DatePicker now supports custom templates for days, months, and years, allowi
   template: `
     <persian-date-picker [(ngModel)]="selectedDate">
       <!-- Custom day template -->
-      <ng-template template="day" let-day>
+      <ng-template dtp-template="day" let-day>
         <div class="custom-day">
           {{ day.getDate() }}
           <!-- Add custom indicators or styling -->
@@ -264,7 +264,7 @@ The DatePicker now supports custom templates for days, months, and years, allowi
       </ng-template>
 
       <!-- Custom month template -->
-      <ng-template template="month" let-month>
+      <ng-template dtp-template="month" let-month>
         <div class="custom-month">
           {{ getMonthName(month) }}
           <!-- Add custom content -->
@@ -272,7 +272,7 @@ The DatePicker now supports custom templates for days, months, and years, allowi
       </ng-template>
 
       <!-- Custom year template -->
-      <ng-template template="year" let-year>
+      <ng-template dtp-template="year" let-year>
         <div class="custom-year">
           {{ year }}
           <!-- Add custom styling or indicators -->
@@ -358,14 +358,14 @@ export class AppComponent {
     <persian-time-picker
       [(ngModel)]="time"
       [inline]="true"
-      [dateAdapter]="dateAdapter"
+      [dateAdapter]="gregorianDateAdapter"
       [timeDisplayFormat]="'HH:mm:ss'"
       (timeChange)="onTimeChange($event)">
     </persian-time-picker>
   `,
 })
 export class AppComponent {
-  constructor(public dateAdapter: GregorianDateAdapter) {
+  constructor(public gregorianDateAdapter: GregorianDateAdapter) {
   }
 }
 ```
@@ -451,7 +451,7 @@ export class AppComponent {
 | cssClass            | string                  | ''            | Custom CSS class                                   |
 | showIcon            | boolean                 | true          | Show clock icon                                    |
 | rtl                 | boolean                 | false         | Right-to-left mode                                 |
-| lang                | Lang_Locale             | lang_En       | Language settings                                  |
+| lang                | LanguageLocale          | EnglishLocale | Language settings                                  |
 | inline              | boolean                 | false         | Show time picker inline (without popup)            |
 | dateAdapter         | DateAdapter<Date>       | undefined     | Custom date adapter for time manipulation          |
 | disableInputMask    | boolean                 | false         | To disable input mask                              |
@@ -493,7 +493,7 @@ export class AppComponent {
   `
 })
 export class AppComponent {
-  form = this.fb.group({
+  form = this.formBuilder.group({
     dateRange: [{
       start: '1403/08/12',
       end: new Date()
@@ -501,7 +501,7 @@ export class AppComponent {
     time: ['14:30']
   });
 
-  constructor(private fb: FormBuilder) {
+  constructor(private formBuilder: FormBuilder) {
   }
 }
 ```
@@ -542,7 +542,7 @@ The TimePicker automatically adapts to your chosen calendar system:
 
 ```html
 
-<form #form="ngForm">
+<form>
   <persian-date-picker
     [(ngModel)]="dateRange"
     name="dateRange"
