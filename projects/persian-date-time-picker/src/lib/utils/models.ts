@@ -12,7 +12,7 @@ export interface YearRange {
 }
 
 export interface DateRange {
-  start?: Date | null,
+  start: Date | null,
   end?: Date | null
 }
 
@@ -21,7 +21,7 @@ export interface RangeInputLabels {
   end: string,
 }
 
-export interface Lang_Locale {
+export interface LanguageLocale {
   today: string;
   lastDay: string;
   lastWeek: string;
@@ -48,7 +48,7 @@ export interface Lang_Locale {
 @Injectable({
   providedIn: 'root'
 })
-export class lang_Fa implements Lang_Locale {
+export class PersianLocale implements LanguageLocale {
   today: string = "امروز";
   lastDay: string = "آخرین روز";
   lastWeek: string = "آخرین هفته";
@@ -75,7 +75,7 @@ export class lang_Fa implements Lang_Locale {
 @Injectable({
   providedIn: 'root'
 })
-export class lang_En implements Lang_Locale {
+export class EnglishLocale implements LanguageLocale {
   today: string = "Today";
   lastDay: string = "Last Day";
   lastWeek: string = "Last Week";

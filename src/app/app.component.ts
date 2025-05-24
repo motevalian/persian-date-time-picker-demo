@@ -1,17 +1,14 @@
 import {Component} from '@angular/core';
 import {
-  PersianDateTimePickerModule
-} from '../../projects/persian-date-time-picker/src/lib/persian-date-time-picker.module';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {
   CalendarType,
-  DatepickerMode,
+  DatePickerMode,
+  PersianDateTimePickerModule,
+  RangeInputLabels,
   TimeValueType,
   ValueFormat
-} from '../../projects/persian-date-time-picker/src/lib/utils/types';
-import {RangeInputLabels} from '../../projects/persian-date-time-picker/src/lib/utils/models';
+} from 'persian-date-time-picker';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {FormControl, FormGroup, FormsModule} from '@angular/forms';
-import {GregorianDateAdapter, JalaliDateAdapter} from '../../projects/persian-date-time-picker/src/lib/date-adapter';
 import {JsonPipe, NgIf} from '@angular/common';
 import {CustomRender} from './samples/custom-render';
 import {DisabledDates} from './samples/disabled/diabled-date';
@@ -50,8 +47,9 @@ import {DisabledTimes} from './samples/disabled/diabled-time';
   ]
 })
 export class AppComponent {
+
   title = 'persian-date-time-picker-demo';
-  Version = '0.0.6';
+  Version = '0.0.7';
   isSidebarOpen = true;
   showPart = 'datepicker';
 
@@ -62,7 +60,7 @@ export class AppComponent {
   // setting
   rtl: boolean = true;
   calendarType: CalendarType = 'jalali';
-  mode: DatepickerMode = 'day';
+  mode: DatePickerMode = 'day';
   isRange: boolean = false;
   format: string = 'yyyy/MM/dd HH:mm';
   footerDescription: string = '';
@@ -98,10 +96,7 @@ export class AppComponent {
   /**
    *
    */
-  constructor(
-    private jalali: JalaliDateAdapter,
-    private gregorian: GregorianDateAdapter
-  ) {
+  constructor() {
   }
 
   ngOnInit(): void {
@@ -127,7 +122,7 @@ export class AppComponent {
   }
 
   onChangeMode(event: Event) {
-    this.mode = (<HTMLSelectElement>event.target).value as DatepickerMode;
+    this.mode = (<HTMLSelectElement>event.target).value as DatePickerMode;
     this.updateCode();
   }
 
@@ -141,7 +136,7 @@ export class AppComponent {
   updateDateCode() {
     let settings = `rtl: boolean = ${this.rtl};
         calendarType: CalendarType = ${this.calendarType};
-        mode: DatepickerMode = ${this.mode};
+        mode: DatePickerMode = ${this.mode};
         isRange: boolean = ${this.isRange};
         format: string = ${this.format};
         footerDescription: string = ${this.footerDescription};

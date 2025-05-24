@@ -1,18 +1,19 @@
 import {Directive, ElementRef, HostListener, Input} from '@angular/core';
 
 @Directive({
-  selector: '[lib-dateMask]',
+  selector: '[dtp-dateMask]',
   standalone: true
 })
 export class DateMaskDirective {
-  @Input('lib-dateMask') dateFormat: string = 'yyyy/MM/dd';
+
+  @Input('dtp-dateMask') dateFormat: string = 'yyyy/MM/dd';
   @Input() disableInputMask = false;
 
   delimiters: string[] = [];
   parts: string[] = [];
   lastValue: string = '';
 
-  constructor(public el: ElementRef) {
+  constructor(public elementRef: ElementRef) {
   }
 
   ngOnInit() {

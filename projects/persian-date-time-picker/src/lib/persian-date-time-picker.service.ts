@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from "@angular/core";
 import {BehaviorSubject, Subject} from "rxjs";
-import {lang_En, lang_Fa, Lang_Locale} from "./utils/models";
+import {EnglishLocale, LanguageLocale, PersianLocale} from "./utils/models";
 
 export interface ValidTimeResult {
   isValid: boolean;
@@ -9,22 +9,21 @@ export interface ValidTimeResult {
 
 @Injectable()
 export class PersianDateTimePickerService {
-  activeInput$: BehaviorSubject<string> = new BehaviorSubject('');
-  locale?: Lang_Locale;
 
-  /**
-   *
-   */
-  constructor(public locale_fa: lang_Fa, public locale_en: lang_En) {
+  activeInput: BehaviorSubject<string> = new BehaviorSubject('');
+  languageLocale?: LanguageLocale;
+
+  constructor(public persianLocale: PersianLocale, public englishLocale: EnglishLocale) {
   }
 
   getActiveInputValue() {
-    return this.activeInput$.getValue();
+    return this.activeInput.getValue();
   }
 }
 
 @Injectable()
 export class DestroyService extends Subject<void> implements OnDestroy {
+
   ngOnDestroy(): void {
     this.next();
     this.complete();

@@ -26,7 +26,7 @@ import {
 } from '@angular/forms';
 import {CdkOverlayOrigin, ConnectedOverlayPositionChange, OverlayModule} from '@angular/cdk/overlay';
 import {slideMotion} from '../utils/animation/slide';
-import {Lang_Locale} from '../utils/models';
+import {LanguageLocale} from '../utils/models';
 import {PersianDateTimePickerService} from '../persian-date-time-picker.service';
 import {DateAdapter, GregorianDateAdapter, JalaliDateAdapter} from '../date-adapter';
 import {TimeConfig, TimeFormat, TimeValueType} from '../utils/types';
@@ -64,12 +64,13 @@ import {DateMaskDirective} from '../utils/input-mask.directive';
   animations: [slideMotion]
 })
 export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDestroy, OnChanges {
+
   @Input() placeholder?: string;
   @Input() rtl = false;
   @Input() placement: 'left' | 'right' = 'right';
   @Input() minTime?: string;
   @Input() maxTime?: string;
-  @Input() lang!: Lang_Locale;
+  @Input() lang!: LanguageLocale;
   @Input() valueType: TimeValueType = 'string';
   @Input() cssClass = '';
   @Input() showIcon = true;
@@ -103,16 +104,8 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
   overlayPositions = [...DEFAULT_DATE_PICKER_POSITIONS];
   private timeoutId: number | null = null;
 
-  constructor(
-    public fb: FormBuilder,
-    public elementRef: ElementRef,
-    public injector: Injector,
-    public cdref: ChangeDetectorRef,
-    public datePickerService: PersianDateTimePickerService,
-    public jalaliAdapter: JalaliDateAdapter,
-    public gregorianAdapter: GregorianDateAdapter,
-  ) {
-    this.dateAdapter = this.gregorianAdapter;
+  constructor(public formBuilder: FormBuilder, public elementRef: ElementRef, public injector: Injector, public changeDetectorRef: ChangeDetectorRef, public persianDateTimePickerService: PersianDateTimePickerService, public jalaliDateAdapter: JalaliDateAdapter, public gregorianDateAdapter: GregorianDateAdapter) {
+    this.dateAdapter = this.gregorianDateAdapter;
     this.initializeForm();
     this.initializeLocale();
   }
@@ -187,25 +180,25 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
       this.updateLocale();
     }
     if (changes['rtl'] && !changes['dateAdapter']) {
-      this.dateAdapter = this.rtl ? this.jalaliAdapter : this.gregorianAdapter;
+      this.dateAdapter = this.rtl ? this.jalaliDateAdapter : this.gregorianDateAdapter;
     }
   }
 
   // Initialization methods
   initializeForm(): void {
-    this.form = this.fb.group({
+    this.form = this.formBuilder.group({
       timeInput: ['']
     });
   }
 
   initializeLocale(): void {
-    this.lang = this.datePickerService.locale_en;
+    this.lang = this.persianDateTimePickerService.englishLocale;
     this.selectedTime.period = this.lang.am;
     this.periods = [this.lang.am, this.lang.pm];
   }
 
   updateLocale(): void {
-    this.lang = this.rtl ? this.datePickerService.locale_fa : this.datePickerService.locale_en;
+    this.lang = this.rtl ? this.persianDateTimePickerService.persianLocale : this.persianDateTimePickerService.englishLocale;
     this.selectedTime.period = this.lang.am;
     this.periods = [this.lang.am, this.lang.pm];
     this.placeholder = this.lang.selectTime;
@@ -258,7 +251,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
       period: hours >= 12 ? this.lang.pm : this.lang.am
     };
 
-    this.cdref.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 
   updateFromValue(value: Date | string | null): void {
@@ -289,7 +282,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
       this.resetSelection();
     }
 
-    this.cdref.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 
   resetSelection(): void {
@@ -299,7 +292,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
       second: 0,
       period: this.lang.am
     };
-    this.cdref.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 
   writeValue(value: Date | string | null): void {
@@ -374,7 +367,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
     this.scrollToTime();
 
     if (!wasOpen) {
-      this.cdref.markForCheck();
+      this.changeDetectorRef.markForCheck();
     }
   }
 
@@ -385,7 +378,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
     if (this.isOpen) {
       this.isOpen = false;
       this.openChange.emit(false);
-      this.cdref.markForCheck();
+      this.changeDetectorRef.markForCheck();
     }
   }
 
@@ -456,7 +449,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
 
       this.onChange(outputValue);
       this.timeChange.emit(outputValue);
-      this.cdref.markForCheck();
+      this.changeDetectorRef.markForCheck();
     }
 
     if (close && !this.inline) {
@@ -665,7 +658,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
   }
 
   onPositionChange(position: ConnectedOverlayPositionChange): void {
-    this.cdref.detectChanges();
+    this.changeDetectorRef.detectChanges();
   }
 
   private onChange: (value: any) => void = () => {

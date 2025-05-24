@@ -4,8 +4,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "persian-date-picker": [
-        "./dist/persian-date-picker"
+      "persian-date-time-picker": [
+        "./dist/persian-date-time-picker"
       ]
     },
     "outDir": "./dist/out-tsc",

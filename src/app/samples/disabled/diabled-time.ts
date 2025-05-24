@@ -1,7 +1,5 @@
 import {Component} from "@angular/core";
-import {
-  PersianDateTimePickerModule
-} from '../../../../projects/persian-date-time-picker/src/lib/persian-date-time-picker.module';
+import {PersianDateTimePickerModule} from 'persian-date-time-picker';
 import {FormsModule} from '@angular/forms';
 
 
@@ -26,6 +24,7 @@ import {FormsModule} from '@angular/forms';
   imports: [PersianDateTimePickerModule, FormsModule]
 })
 export class DisabledTimes {
+
   selectedDate?: Date | string;
   demoCode = `
         @Component({
@@ -74,12 +73,12 @@ export class DisabledTimes {
     return false;
   };
 
-  toggleCode(elm: HTMLDivElement) {
-    let display = elm.style.display;
+  toggleCode(htmlDivElement: HTMLDivElement) {
+    let display = htmlDivElement.style.display;
     if (display != 'block') {
-      elm.style.display = 'block';
+      htmlDivElement.style.display = 'block';
     } else {
-      elm.style.display = 'none';
+      htmlDivElement.style.display = 'none';
     }
   }
 }

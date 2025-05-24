@@ -1,6 +1,6 @@
 {
   "name": "persian-date-time-picker",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A Comprehensive date/time Picker for Angular with Persian/Jalali support",
   "author": "Saeed Motevalian",
   "license": "MIT",
