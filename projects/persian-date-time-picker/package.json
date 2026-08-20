@@ -1,6 +1,6 @@
 {
   "name": "@s.motevalian/persian-date-time-picker",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Responsive Angular Persian (Jalali/Shamsi) and Gregorian date, time, date-time, and range picker with RTL and forms support.",
   "author": "Saeed Motevalian",
   "license": "MIT",
