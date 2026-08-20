@@ -18,6 +18,9 @@
           [readonly]="readOnly || readOnlyInput"
           formControlName="dateInput"
           type="text">
+        <button (click)="clearDate($event)" *ngIf="allowEmpty && selectedDate" aria-label="Clear date"
+                class="clear-button" type="button">×
+        </button>
         <ng-container *ngTemplateOutlet="icon"></ng-container>
       </div>
     </ng-container>
@@ -124,7 +127,9 @@
     [cdkConnectedOverlayOpen]="isOpen"
     [cdkConnectedOverlayOrigin]="origin!"
     [cdkConnectedOverlayPositions]="overlayPositions"
+    [cdkConnectedOverlayPush]="true"
     [cdkConnectedOverlayTransformOriginOn]="'.persian-date-time-picker-wrapper'"
+    [cdkConnectedOverlayViewportMargin]="8"
     cdkConnectedOverlay
     nzConnectedOverlay>
     <div

@@ -1,115 +1,159 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap');
 @import '@angular/cdk/overlay-prebuilt.css';
 
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+}
+
+html {
+  min-width: 320px;
+  background: #f4f7fb;
+}
+
 body {
-  font-family: 'vazirmatn';
+  min-width: 320px;
   margin: 0;
-  padding: 0;
+  font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+  color: #172033;
+  background: #f4f7fb;
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
+button, input, select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
 code {
-  background-color: #f0f0f0;
-  border: 1px solid orange;
-  color: teal;
-  padding: 5px;
-  border-radius: 3px;
+  display: inline-block;
+  max-width: 100%;
+  padding: 4px 7px;
+  border: 1px solid #e0defd;
+  border-radius: 7px;
+  color: #5046b8;
+  background: #f1f0ff;
   direction: ltr;
+  overflow-wrap: anywhere;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 18px 20px;
+}
+
+.filters > .filters {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+}
+
+.form-group > label {
+  color: #344054;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 42px;
+  max-width: 100%;
+  padding: 8px 11px;
+  border: 1px solid #dfe3ec;
+  border-radius: 11px;
+  color: #20283a;
+  background: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+input:hover,
+select:hover {
+  border-color: #bcb6f4;
+}
+
+input:focus,
+select:focus {
+  border-color: #7569eb;
+  box-shadow: 0 0 0 4px rgba(101, 87, 232, .11);
+}
+
+.range-labels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
 }
 
 .switch-container {
-  display: inline-block;
   position: relative;
-  width: 55px;
+  width: 48px;
   height: 28px;
 }
 
 .switch-checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   opacity: 0;
-  width: 0;
-  height: 0;
 }
 
 .switch-label {
   position: absolute;
+  inset: 0;
+  border: 1px solid #d5dae5;
+  border-radius: 999px;
+  background: #e5e8ef;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
+  transition: 180ms ease;
 }
 
 .switch-label .switch-button {
   position: absolute;
-  content: "";
-  height: 20px;
+  left: 3px;
+  top: 3px;
   width: 20px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
+  height: 20px;
   border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(23, 32, 51, .2);
+  transition: transform 180ms ease;
 }
 
 .switch-checkbox:checked + .switch-label {
-  background-color: #2196F3;
+  border-color: #6557e8;
+  background: #6557e8;
 }
 
 .switch-checkbox:checked + .switch-label .switch-button {
-  transform: translateX(26px);
+  transform: translateX(20px);
 }
 
-input {
-  font-family: inherit;
-  max-width: 300px;
-  padding: 6px 10px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.3s;
+.switch-checkbox:focus-visible + .switch-label {
+  outline: 3px solid rgba(101, 87, 232, .18);
+  outline-offset: 2px;
 }
 
-input:hover {
-  border-color: #40a9ff;
-}
+@media (max-width: 560px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
 
-input:focus {
-  border-color: #40a9ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-  outline: none;
-}
-
-select {
-  padding: 5px;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-
-/* Forms */
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 20px;
-}
-
-.form-group {
-  margin: 5px;
-  display: flex;
-  flex-direction: column;
-}
-
-.range-labels {
-  display: flex;
-  gap: 15px;
-}
-
-.range-labels input {
-  max-width: 120px;
+  .range-labels {
+    grid-template-columns: 1fr;
+  }
 }

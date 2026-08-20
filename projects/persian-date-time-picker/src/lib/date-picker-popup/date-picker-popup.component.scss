@@ -1,17 +1,17 @@
 // Variables
-$primary-color: #1890ff;
-$primary-hover: #40a9ff;
-$primary-light: #e6f7ff;
-$primary-medium: #bfeaff;
-$border-color: #f0f0f0;
-$text-color: #555;
-$text-color-light: #ccc;
-$heading-color: #47366C;
-$weekday-color: #18396cB0;
-$shadow-color: rgba(0, 0, 0, 0.1);
-$today-border: #29b9ff;
-$today-dot: mediumpurple;
-$text-color-disabled: #aaa;
+$primary-color: var(--pdtp-primary, #6557e8);
+$primary-hover: var(--pdtp-primary-hover, #5145c7);
+$primary-light: var(--pdtp-primary-soft, #efedff);
+$primary-medium: var(--pdtp-primary-medium, #dedaff);
+$border-color: #e7e9f1;
+$text-color: #3f4759;
+$text-color-light: #b8beca;
+$heading-color: var(--pdtp-heading, #232a3b);
+$weekday-color: #737c90;
+$shadow-color: rgba(25, 31, 55, 0.16);
+$today-border: #8c82f1;
+$today-dot: #6557e8;
+$text-color-disabled: #b7bdc8;
 
 :host {
   * {
@@ -37,12 +37,12 @@ $text-color-disabled: #aaa;
   &-popup {
     display: flex;
     flex-direction: column;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px $shadow-color;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px $shadow-color, 0 4px 14px rgba(25, 31, 55, .08);
     overflow: hidden;
     z-index: 1000;
     width: fit-content;
-    border: 1px solid #ddd;
+    border: 1px solid #e1e4ed;
     background: white;
   }
 
@@ -54,16 +54,77 @@ $text-color-disabled: #aaa;
 
   &-footer {
     border-top: 1px solid $border-color;
-    padding: 10px;
+    padding: 12px 14px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
 }
 
+@media (max-width: 520px) {
+  .date-picker-popup {
+    width: min(340px, calc(100vw - 24px));
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+  }
+
+  .date-picker-content {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .period-selector,
+  .side-selector {
+    display: none;
+  }
+
+  .calendar {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding-inline: 8px;
+  }
+
+  .time-picker-section {
+    width: 100%;
+    border-inline-start: 0;
+    border-top: 1px solid $border-color;
+  }
+
+  persian-time-picker {
+    display: block;
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .date-picker-popup {
+    width: calc(100vw - 40px);
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+  }
+
+  .date-picker-content {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .period-selector,
+  .side-selector {
+    display: none;
+  }
+
+  .calendar {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
 %selector-shared {
   width: 120px;
   border-inline-end: 1px solid $border-color;
+  background: #fafbfe;
 }
 
 %selector-button-shared {
@@ -71,22 +132,25 @@ $text-color-disabled: #aaa;
   justify-content: space-between;
   font-size: 14px;
   width: 100%;
-  padding: 10px;
+  min-height: 42px;
+  padding: 9px 12px;
   text-align: start;
   border: none;
   background: none;
   cursor: pointer;
-  border-block-end: 1px solid $border-color;
+  border-block-end: 1px solid #eff1f5;
   color: $text-color;
   transition: background-color 0.3s;
 
   &:hover {
     background-color: $primary-light;
+    color: $primary-hover;
   }
 
   &.active {
     background-color: $primary-medium;
-    color: #0175e0;
+    color: $primary-hover;
+    font-weight: 700;
     width: 100%;
   }
 }
@@ -115,7 +179,7 @@ $text-color-disabled: #aaa;
 }
 
 .calendar {
-  padding: 10px 15px 15px;
+  padding: 14px 16px 16px;
   flex-grow: 1;
   background: #FFF;
   width: 280px;
@@ -126,8 +190,9 @@ $text-color-disabled: #aaa;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
-  padding-bottom: 2px;
+  min-height: 40px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px solid $border-color;
 
   button {
@@ -135,7 +200,16 @@ $text-color-disabled: #aaa;
     border: none;
     font-size: 16px;
     cursor: pointer;
-    padding: 4px 5px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 9px;
+
+    &:hover {
+      background: $primary-light;
+    }
   }
 
   .month-name,
@@ -148,8 +222,8 @@ $text-color-disabled: #aaa;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  margin-bottom: 5px;
-  font-size: 14px;
+  margin-bottom: 7px;
+  font-size: 12px;
   color: $weekday-color;
 
   span {
@@ -164,11 +238,18 @@ $text-color-disabled: #aaa;
 
   button {
     position: relative;
+    border-radius: 10px;
+
+    &:hover {
+      color: $primary-hover;
+      background: $primary-light;
+    }
+
     aspect-ratio: 1;
     border: none;
     background: none;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: 10px;
     font-size: 14px;
     color: $text-color;
     transition: background-color 0.3s, color 0.3s;
@@ -182,8 +263,9 @@ $text-color-disabled: #aaa;
     }
 
     &.selected, &.range-end.in-range, &.range-start.in-range {
-      background-color: $primary-color;
+      background: linear-gradient(135deg, $primary-color, $primary-hover);
       color: white;
+      box-shadow: 0 5px 12px rgba(101, 87, 232, .24);
     }
 
     &.in-range {
@@ -192,7 +274,7 @@ $text-color-disabled: #aaa;
     }
 
     &.today {
-      border: 2px solid $today-border;
+      border: 1px solid $today-border;
 
       span {
         position: absolute;
@@ -207,7 +289,7 @@ $text-color-disabled: #aaa;
 
     &.disabled {
       color: $text-color-disabled;
-      background: #fafafa;
+      background: #f6f7f9;
       opacity: 1;
     }
 
@@ -249,7 +331,7 @@ $text-color-disabled: #aaa;
     position: relative;
 
     &.selected {
-      background-color: $primary-color;
+      background: linear-gradient(135deg, $primary-color, $primary-hover);
       color: white;
     }
   }
@@ -284,12 +366,14 @@ $text-color-disabled: #aaa;
     color: $primary-color;
     cursor: pointer;
     font-size: 14px;
-    padding: 2px 6px;
+    min-height: 34px;
+    padding: 6px 12px;
+    border-radius: 9px;
     transition: color 0.3s;
 
     &.ok {
       background: $primary-color;
-      border-radius: 1px;
+      border-radius: 9px;
       color: #fff;
 
       &:hover {
@@ -366,5 +450,64 @@ button:disabled {
 }
 
 .time-picker-section {
+  display: flex;
+  justify-content: center;
   border-inline-start: 1px solid $border-color;
+}
+
+@media (max-width: 520px) {
+  .date-picker-popup {
+    width: min(340px, calc(100vw - 24px));
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+    border-radius: 16px;
+  }
+
+  .date-picker-content {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .period-selector,
+  .side-selector {
+    display: none;
+  }
+
+  .calendar {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding: 10px 12px 12px;
+  }
+
+  .header {
+    min-height: 34px;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+  }
+
+  .days {
+    gap: 1px;
+
+    button {
+      font-size: 13px;
+    }
+  }
+
+  .time-picker-section {
+    width: 100%;
+    border-inline-start: 0;
+    border-top: 1px solid $border-color;
+  }
+
+  persian-time-picker {
+    display: block;
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .date-picker-popup {
+    width: calc(100vw - 24px);
+  }
 }

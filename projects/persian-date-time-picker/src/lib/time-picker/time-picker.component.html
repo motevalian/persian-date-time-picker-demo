@@ -31,7 +31,9 @@
       [cdkConnectedOverlayOpen]="isOpen"
       [cdkConnectedOverlayOrigin]="origin!"
       [cdkConnectedOverlayPositions]="overlayPositions"
+      [cdkConnectedOverlayPush]="true"
       [cdkConnectedOverlayTransformOriginOn]="'.time-picker-popup'"
+      [cdkConnectedOverlayViewportMargin]="8"
       cdkConnectedOverlay
       nzConnectedOverlay>
       <ng-container *ngTemplateOutlet="timePickerContent"></ng-container>
@@ -123,9 +125,6 @@
       <div *ngIf="!inline" class="time-picker-footer">
         <div class="footer-buttons">
           <button (click)="selectNow()" class="now-btn" type="button">{{ lang.now }}</button>
-        </div>
-        <div class="footer-actions">
-          <button (click)="save()" class="save-btn" type="button">{{ lang.ok }}</button>
         </div>
       </div>
     </div>

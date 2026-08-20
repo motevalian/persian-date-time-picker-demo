@@ -6,13 +6,11 @@ import {
   EventEmitter,
   forwardRef,
   HostListener,
-  Injector,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  runInInjectionContext,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -24,7 +22,7 @@ import {
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule
 } from '@angular/forms';
-import {CdkOverlayOrigin, ConnectedOverlayPositionChange, OverlayModule} from '@angular/cdk/overlay';
+import {ConnectedOverlayPositionChange, OverlayModule} from '@angular/cdk/overlay';
 import {slideMotion} from '../utils/animation/slide';
 import {LanguageLocale} from '../utils/models';
 import {PersianDateTimePickerService} from '../persian-date-time-picker.service';
@@ -82,7 +80,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
   @Input() allowEmpty = true;
   @Input() readOnly = false;
   @Input() readOnlyInput = false;
-  @Output() timeChange = new EventEmitter<Date | string>();
+  @Output() timeChange = new EventEmitter<Date | string | null>();
   @Output() openChange = new EventEmitter<boolean>();
   @ViewChild('timePickerInput') timePickerInput!: ElementRef<HTMLInputElement>;
   @ViewChild('popupWrapper') popupWrapper!: ElementRef<HTMLDivElement>;
@@ -100,11 +98,11 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
   };
   isOpen = false;
   form?: FormGroup;
-  origin?: CdkOverlayOrigin;
+  origin?: ElementRef;
   overlayPositions = [...DEFAULT_DATE_PICKER_POSITIONS];
   private timeoutId: number | null = null;
 
-  constructor(public formBuilder: FormBuilder, public elementRef: ElementRef, public injector: Injector, public changeDetectorRef: ChangeDetectorRef, public persianDateTimePickerService: PersianDateTimePickerService, public jalaliDateAdapter: JalaliDateAdapter, public gregorianDateAdapter: GregorianDateAdapter) {
+  constructor(public formBuilder: FormBuilder, public elementRef: ElementRef, public changeDetectorRef: ChangeDetectorRef, public persianDateTimePickerService: PersianDateTimePickerService, public jalaliDateAdapter: JalaliDateAdapter, public gregorianDateAdapter: GregorianDateAdapter) {
     this.dateAdapter = this.gregorianDateAdapter;
     this.initializeForm();
     this.initializeLocale();
@@ -152,9 +150,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
   // Lifecycle hooks
   ngOnInit(): void {
     this.updateHourRange();
-    runInInjectionContext(this.injector, () => {
-      this.origin = new CdkOverlayOrigin(this.elementRef);
-    });
+    this.origin = this.elementRef;
     this.setupInputSubscription();
     this.value = this.selectedDate;
 
@@ -206,7 +202,14 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
 
   setupInputSubscription(): void {
     this.form!.get('timeInput')?.valueChanges.subscribe(value => {
-      if (!value) return;
+      if (!value) {
+        if (this.allowEmpty && this._value !== null) {
+          this._value = null;
+          this.onChange(null);
+          this.timeChange.emit(null);
+        }
+        return;
+      }
 
       if (!this.isOpen) {
         this.validateAndUpdateTime(value);
@@ -298,6 +301,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
   writeValue(value: Date | string | null): void {
     if (!value) {
       this.value = null;
+      this.form?.get('timeInput')?.setValue('', {emitEvent: false});
       return;
     }
 
@@ -334,7 +338,11 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
 
   handleTimeInput(): void {
     const currentValue = this.form!.get('timeInput')?.value;
-    if (currentValue || (!currentValue && !this.allowEmpty)) {
+    if (!currentValue && this.allowEmpty) {
+      this._value = null;
+      this.onChange(null);
+      this.timeChange.emit(null);
+    } else if (currentValue) {
       this.validateAndUpdateTime(currentValue);
     }
   }
@@ -388,7 +396,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
       this.selectedTime.hour = hour;
       this.updateTimeDisplay();
       this.scrollToSelectedItem(`h${hour}`);
-      if (this.inline) this.save();
+      this.save(false);
     }
   }
 
@@ -397,7 +405,7 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
       this.selectedTime.minute = minute;
       this.updateTimeDisplay();
       this.scrollToSelectedItem(`m${minute}`);
-      if (this.inline) this.save();
+      this.save(false);
     }
   }
 
@@ -406,13 +414,14 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
       this.selectedTime.second = second;
       this.updateTimeDisplay();
       this.scrollToSelectedItem(`s${second}`);
-      if (this.inline) this.save();
+      this.save(false);
     }
   }
 
   selectPeriod(period: string): void {
     this.selectedTime.period = period;
     this.updateTimeDisplay();
+    this.save(false);
   }
 
   selectNow(): void {
@@ -638,12 +647,13 @@ export class TimePickerComponent implements ControlValueAccessor, OnInit, OnDest
       }
 
       this.timeoutId = window.setTimeout(() => {
-        const selectedElement = this.popupWrapper?.nativeElement.querySelector(`#selector_${id}`);
+        const selectedElement = this.popupWrapper?.nativeElement.querySelector(`#selector_${id}`) as HTMLElement | null;
         if (selectedElement) {
-          selectedElement.scrollIntoView({
-            behavior,
-            block: 'center'
-          });
+          const scrollContainer = selectedElement.closest('.time-column') as HTMLElement | null;
+          if (scrollContainer) {
+            const targetTop = selectedElement.offsetTop - (scrollContainer.clientHeight - selectedElement.clientHeight) / 2;
+            scrollContainer.scrollTo({top: Math.max(0, targetTop), behavior});
+          }
         }
         resolve(true);
       }, 0);

@@ -7,8 +7,5 @@
   "allowedNonPeerDependencies": [
     "date-fns",
     "date-fns-jalali"
-  ],
-  "assets": [
-    "./styles.css"
   ]
 }
