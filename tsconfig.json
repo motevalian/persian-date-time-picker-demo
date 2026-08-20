@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "experimentalDecorators": true,
     "paths": {
-      "persian-date-time-picker": [
+      "@s.motevalian/persian-date-time-picker": [
         "./dist/persian-date-time-picker"
       ]
     },

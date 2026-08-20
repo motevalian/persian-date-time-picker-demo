@@ -1,12 +1,12 @@
 # Persian Date Time Picker for Angular
 
-[![npm](https://img.shields.io/npm/v/persian-date-time-picker.svg)](https://www.npmjs.com/package/persian-date-time-picker)
-[![downloads](https://img.shields.io/npm/dm/persian-date-time-picker.svg)](https://www.npmjs.com/package/persian-date-time-picker)
-[![license](https://img.shields.io/npm/l/persian-date-time-picker.svg)](https://github.com/motevalian/persian-date-time-picker-demo)
+[![npm](https://img.shields.io/npm/v/@s.motevalian/persian-date-time-picker.svg)](https://www.npmjs.com/package/@s.motevalian/persian-date-time-picker)
+[![downloads](https://img.shields.io/npm/dm/@s.motevalian/persian-date-time-picker.svg)](https://www.npmjs.com/package/@s.motevalian/persian-date-time-picker)
+[![license](https://img.shields.io/npm/l/@s.motevalian/persian-date-time-picker.svg)](https://github.com/motevalian/persian-date-time-picker-demo)
 
 A lightweight, responsive Angular date picker and time picker for Jalali (Persian/Shamsi) and Gregorian calendars. It supports RTL, ranges, disabled dates and times, custom templates, inline mode, and Angular forms.
 
-**[Live demo](https://motevalian.com/dtp/)** · **[npm package](https://www.npmjs.com/package/persian-date-time-picker)** · **[Report an issue](https://github.com/motevalian/persian-date-time-picker-demo/issues)**
+**[Live demo](https://motevalian.com/dtp/)** · **[npm package](https://www.npmjs.com/package/@s.motevalian/persian-date-time-picker)** · **[Report an issue](https://github.com/motevalian/persian-date-time-picker-demo/issues)**
 
 ## Features
 
@@ -27,7 +27,7 @@ Package `0.2.x` supports Angular 14 through 22. Install the CDK major that match
 ## Installation
 
 ```bash
-npm install persian-date-time-picker @angular/cdk@YOUR_ANGULAR_MAJOR
+npm install @s.motevalian/persian-date-time-picker @angular/cdk@YOUR_ANGULAR_MAJOR
 ```
 
 `date-fns` and `date-fns-jalali` are normal package dependencies and install automatically. Consumers do not need to install them separately.
@@ -45,7 +45,7 @@ Ensure Angular animations are enabled with `provideAnimations()` for standalone 
 ```ts
 import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {PersianDateTimePickerModule} from 'persian-date-time-picker';
+import {PersianDateTimePickerModule} from '@s.motevalian/persian-date-time-picker';
 
 @Component({
   selector: 'app-example',
