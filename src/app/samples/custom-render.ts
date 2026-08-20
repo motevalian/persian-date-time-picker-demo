@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {GregorianDateAdapter, JalaliDateAdapter, PersianDateTimePickerModule} from 'persian-date-time-picker';
+import {GregorianDateAdapter, JalaliDateAdapter, PersianDateTimePickerModule} from '@s.motevalian/persian-date-time-picker';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 

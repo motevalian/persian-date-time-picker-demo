@@ -6,7 +6,7 @@ import {
   RangeInputLabels,
   TimeValueType,
   ValueFormat
-} from 'persian-date-time-picker';
+} from '@s.motevalian/persian-date-time-picker';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {FormControl, FormGroup, FormsModule} from '@angular/forms';
 import {JsonPipe, NgIf} from '@angular/common';
@@ -49,7 +49,7 @@ import {DisabledTimes} from './samples/disabled/diabled-time';
 export class AppComponent {
 
   title = 'persian-date-time-picker-demo';
-  Version = '0.3.0';
+  Version = '0.4.0';
   isSidebarOpen = true;
   showPart = 'datepicker';
 

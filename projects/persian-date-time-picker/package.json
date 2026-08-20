@@ -1,6 +1,6 @@
 {
-  "name": "persian-date-time-picker",
-  "version": "0.3.0",
+  "name": "@s.motevalian/persian-date-time-picker",
+  "version": "0.4.0",
   "description": "Responsive Angular Persian (Jalali/Shamsi) and Gregorian date, time, date-time, and range picker with RTL and forms support.",
   "author": "Saeed Motevalian",
   "license": "MIT",
@@ -31,14 +31,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/motevalian/persian-date-time-picker-demo"
+    "url": "git+https://github.com/motevalian/persian-date-time-picker-demo.git"
   },
   "homepage": "https://github.com/motevalian/persian-date-time-picker-demo#readme",
   "bugs": {
     "url": "https://github.com/motevalian/persian-date-time-picker-demo/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "private": false,
   "peerDependencies": {
