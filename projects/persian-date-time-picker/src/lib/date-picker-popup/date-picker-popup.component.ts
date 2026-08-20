@@ -230,7 +230,8 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
   }
 
   // ========== Time Selection Methods ==========
-  onTimeChange(time: string | Date): void {
+  onTimeChange(time: string | Date | null): void {
+    if (!time) return;
     const timeDate = time instanceof Date ? time : new Date(time);
 
     if (!this.isRange) {
@@ -247,6 +248,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
 
     const updatedDate = this.applyTimeToDate(this.selectedDate!, timeDate);
     this.selectedDate! = updatedDate;
+    this.dateSelected.emit(updatedDate);
   }
 
   updateRangeDateTime(timeDate: Date): void {
@@ -260,13 +262,10 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
     } else if (this.activeInput === 'end' && this.selectedEndDate) {
       const updatedDate = this.applyTimeToDate(this.selectedEndDate, timeDate);
       this.selectedEndDate = updatedDate;
-      clearTimeout(this.timeoutId);
-      this.timeoutId = setTimeout(() => {
-        this.dateRangeSelected.emit({
-          start: this.selectedStartDate!,
-          end: this.selectedEndDate!
-        });
-      }, 300);
+      this.dateRangeSelected.emit({
+        start: this.selectedStartDate!,
+        end: this.selectedEndDate!
+      });
     }
   }
 
@@ -352,8 +351,7 @@ export class DatePickerPopupComponent implements OnInit, OnChanges, AfterViewIni
 
   handleSingleSelection(date: Date): void {
     this.selectedDate! = date;
-    if (!this.showTimePicker)
-      this.dateSelected.emit(date);
+    this.dateSelected.emit(date);
   }
 
   selectMonth(month: number, closeAfterSelection: boolean = false): void {

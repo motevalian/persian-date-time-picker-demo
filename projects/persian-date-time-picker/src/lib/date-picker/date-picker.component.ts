@@ -8,7 +8,6 @@ import {
   EventEmitter,
   forwardRef,
   Inject,
-  Injector,
   Input,
   NgZone,
   OnChanges,
@@ -16,7 +15,6 @@ import {
   OnInit,
   Output,
   QueryList,
-  runInInjectionContext,
   SimpleChanges,
   ViewChild,
   ViewChildren
@@ -36,7 +34,6 @@ import {DateAdapter, GregorianDateAdapter, JalaliDateAdapter} from '../date-adap
 import {CustomLabels, DateRange, LanguageLocale, RangeInputLabels} from '../utils/models';
 import {DatePickerPopupComponent} from '../date-picker-popup/date-picker-popup.component';
 import {
-  CdkOverlayOrigin,
   ConnectedOverlayPositionChange,
   ConnectionPositionPair,
   HorizontalConnectionPos,
@@ -123,7 +120,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   @ViewChild(DatePickerPopupComponent) datePickerPopup?: DatePickerPopupComponent;
   @ContentChildren(CustomTemplate) templates!: QueryList<CustomTemplate>;
   // ========== Class Properties ==========
-  origin?: CdkOverlayOrigin;
+  origin?: ElementRef;
   overlayPositions: ConnectionPositionPair[] = [...DEFAULT_DATE_PICKER_POSITIONS];
   currentPositionX: HorizontalConnectionPos = 'start';
   currentPositionY: VerticalConnectionPos = 'bottom';
@@ -142,7 +139,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   timeDisplayFormat = 'HH:mm';
   documentClickListener?: (event: MouseEvent) => void;
 
-  constructor(public formBuilder: FormBuilder, public elementRef: ElementRef, public injector: Injector, public changeDetectorRef: ChangeDetectorRef, public persianDateTimePickerService: PersianDateTimePickerService, public destroyService: DestroyService, public ngZone: NgZone, public jalaliDateAdapter: JalaliDateAdapter, public gregorianDateAdapter: GregorianDateAdapter, @Inject(DOCUMENT) doc: Document) {
+  constructor(public formBuilder: FormBuilder, public elementRef: ElementRef, public changeDetectorRef: ChangeDetectorRef, public persianDateTimePickerService: PersianDateTimePickerService, public destroyService: DestroyService, public ngZone: NgZone, public jalaliDateAdapter: JalaliDateAdapter, public gregorianDateAdapter: GregorianDateAdapter, @Inject(DOCUMENT) doc: Document) {
     this.initializeComponent(doc);
   }
 
@@ -210,7 +207,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
 
   // ========== Initialization Methods ==========
   initializeComponent(doc: Document): void {
-    this.origin = new CdkOverlayOrigin(this.elementRef);
+    this.origin = this.elementRef;
     this.document = doc;
     this.form = this.formBuilder.group({
       dateInput: [''],
@@ -274,9 +271,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
       this.format = this.getFormatForMode();
     }
     if (changes['isRange'] && !this.isRange) {
-      runInInjectionContext(this.injector, () => {
-        this.origin = new CdkOverlayOrigin(this.elementRef);
-      });
+      this.origin = this.elementRef;
     }
     if (changes['valueFormat']) {
       this.emitValueIfChanged();
@@ -296,6 +291,10 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   // ========== Input Handling Methods ==========
   onInputChange(value: string, inputType?: 'start' | 'end'): void {
     if (!this.isInternalChange) {
+      if (!value && this.allowEmpty) {
+        this.clearValue(inputType ?? null);
+        return;
+      }
       if (this.isRange) {
         this.handleRangeInputChange(value, inputType);
       } else {
@@ -328,7 +327,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
   // ========== Value Emission Methods ==========
   emitValueIfChanged(): void {
     const newValue = this.prepareValueForEmission();
-    if (newValue && JSON.stringify(newValue) !== JSON.stringify(this.lastEmittedValue)) {
+    if (JSON.stringify(newValue) !== JSON.stringify(this.lastEmittedValue)) {
       this.lastEmittedValue = newValue;
       this.onChange(newValue);
       this.onChangeValue.emit(newValue);
@@ -382,7 +381,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
     const formattedDate = this.dateAdapter!.format(date, this.format);
     this.form!.get('dateInput')?.setValue(formattedDate, {emitEvent: false});
     this.emitValueIfChanged();
-    this.close();
+    if (!this.hasTimeComponent(this.format)) this.close();
   }
 
   // ========== Date Range Methods ==========
@@ -661,15 +660,17 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
     const inputValue = this.getInputValue(inputType);
 
     if (typeof inputValue === 'string' && !this.isOpen) {
+      if (!inputValue && this.allowEmpty) {
+        this.clearValue(inputType);
+        this.onBlur.emit({input: inputType, event, value: null});
+        return;
+      }
       const correctedValue = this.validateAndCorrectInput(inputValue);
       if (correctedValue !== inputValue) {
         if (inputValue) {
           this.handleCorrectedValue(inputType, correctedValue);
         } else if (!this.allowEmpty) {
           this.handleCorrectedValue(inputType, correctedValue);
-        } else {
-          this.selectedDate = null;
-          this.onChange(inputValue);
         }
       }
       this.onBlur.emit({
@@ -678,6 +679,27 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
         value: correctedValue
       });
     }
+  }
+
+  clearValue(inputType: 'start' | 'end' | null): void {
+    if (this.isRange) {
+      if (inputType === 'start') this.selectedStartDate = null;
+      if (inputType === 'end') this.selectedEndDate = null;
+    } else {
+      this.selectedDate = null;
+    }
+    this.lastEmittedValue = null;
+    this.onChange(null);
+    this.onChangeValue.emit(null);
+    this.changeDetectorRef.markForCheck();
+  }
+
+  clearDate(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.form?.get('dateInput')?.setValue('', {emitEvent: false});
+    this.clearValue(null);
+    this.close();
   }
 
   getInputValue(inputType: 'start' | 'end' | null): string | undefined {
@@ -911,7 +933,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnChan
         this.activeInput = active;
         if (active) {
           if (!this.isOpen)
-            this.origin = new CdkOverlayOrigin(this.activeInput == 'start' ? this.rangePickerInputs?.first : this.rangePickerInputs!.last);
+            this.origin = this.activeInput == 'start' ? this.rangePickerInputs?.first : this.rangePickerInputs!.last;
           this.focus();
         }
       });

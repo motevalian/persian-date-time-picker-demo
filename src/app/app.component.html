@@ -1,10 +1,18 @@
 <div class="main-section">
   <div [@slideInOut]="isSidebarOpen ? 'in' : 'out'" [class.closed]="!isSidebarOpen" class="sidebar" id="sidebar">
     <div class="sidebar-content">
-      <h2>Persian Date/Time picker</h2>
+      <div aria-hidden="true" class="brand-mark">ج</div>
+      <div class="brand-copy">
+        <span>Angular components</span>
+        <h2>Persian Picker</h2>
+      </div>
       <ul>
-        <li (click)="showPart = 'datepicker'">Date picker</li>
-        <li (click)="showPart = 'timepicker'">Time Picker</li>
+        <li>
+          <button (click)="showPart = 'datepicker'" [class.active]="showPart === 'datepicker'">Date picker</button>
+        </li>
+        <li>
+          <button (click)="showPart = 'timepicker'" [class.active]="showPart === 'timepicker'">Time picker</button>
+        </li>
         <li>
           <a href="https://www.npmjs.com/package/persian-date-time-picker" target="_blank">About ({{ Version }})</a>
         </li>
@@ -28,6 +36,14 @@
         </svg>
       </button>
     </header>
+    <section class="page-intro">
+      <div>
+        <span class="eyebrow">Interactive playground</span>
+        <h1>{{ showPart === 'datepicker' ? 'Persian date picker' : 'Persian time picker' }}</h1>
+        <p>Configure every detail and preview the result instantly across Jalali and Gregorian calendars.</p>
+      </div>
+      <span class="version-pill">v{{ Version }}</span>
+    </section>
     <div class="demo-part">
       <!-- Date Picker -->
       <div *ngIf="showPart == 'datepicker'" class="container">

@@ -134,11 +134,10 @@
         [valueType]="'date'"></persian-time-picker>
     </div>
   </div>
-  <div *ngIf="footerDescription || showTimePicker || showToday" class="date-picker-footer">
+  <div *ngIf="footerDescription || showToday" class="date-picker-footer">
     <div *ngIf="footerDescription" [innerHtml]="footerDescription" class="footer-description">
     </div>
     <div class="footer-actions">
-      <button (click)="onOkClick()" *ngIf="showTimePicker" class="footer-button ok">{{ lang!.ok }}</button>
       <button (click)="onTodayClick()" *ngIf="showToday" class="footer-button">{{ lang!.today }}</button>
     </div>
   </div>
